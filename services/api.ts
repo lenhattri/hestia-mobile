@@ -21,3 +21,4 @@ export const loginAPI = (username: string, password: string): Promise<{
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
   }).then(res => res.json().then(data => data.data));
+

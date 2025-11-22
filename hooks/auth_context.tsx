@@ -1,4 +1,5 @@
 import { loginAPI } from "@/services/api";
+import { closeWebSocket } from "@/services/websocket";
 import { removeToken, setToken } from "@/utils/storage";
 import { useRouter } from "expo-router";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
@@ -47,6 +48,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const logout = async () => {
     await removeToken();
     setIsLoggedIn(false);
+    closeWebSocket();
     router.replace("/login");
   };
 

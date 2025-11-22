@@ -1,5 +1,7 @@
-export const WS_BASE_URL = "ws://192.168.1.9:8080/ws/v1/env";
+import { config } from './config';
+
+export const WS_BASE_URL = config.WS_BASE_URL;
 
 export const DEFAULT_ROOMS = {
-  KIT01: "kit-01",
-};
+  KIT01: config.DEFAULT_ROOMS.KIT01,
+} as const;

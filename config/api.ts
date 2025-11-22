@@ -1,7 +1,9 @@
-export const API_BASE_URL = "http://192.168.1.9:8080";
+import { config } from "./config";
+
+export const API_BASE_URL = config.API_BASE_URL;
 
 export const ENDPOINTS = {
-  LOGIN: "/auth/login",
-  REFRESH: "/auth/refresh",
-  LOGOUT: "/auth/logout",
-};
+  LOGIN: '/auth/login',
+  REFRESH: '/auth/refresh',
+  LOGOUT: '/auth/logout',
+} as const;

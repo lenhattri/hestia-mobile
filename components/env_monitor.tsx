@@ -1,6 +1,6 @@
+import { closeWebSocket, createWebSocket } from "@/services/websocket";
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { getTokens } from "../utils/storage";
 
 interface Measure {
   t: number;
@@ -35,12 +35,12 @@ export default function EnvMonitor({ roomId }: EnvMonitorProps) {
     let isMounted = true;
 
     const connectWS = async () => {
-      const tokens = await getTokens();
-      const accessToken = tokens?.access_token;
 
-      ws.current = new WebSocket(
-        `ws://192.168.1.9:8082/ws?room=${roomId}&token=${accessToken}`
-      );
+      ws.current = await createWebSocket(roomId);
+      if (!ws.current) {
+        console.error("Failed to create WebSocket");
+        return;
+      }
 
       ws.current.onopen = () => {
         console.log("WS connected via proxy");
@@ -79,11 +79,11 @@ export default function EnvMonitor({ roomId }: EnvMonitorProps) {
 
     connectWS();
 
-    return () => {
-      isMounted = false;
-      if (reconnectTimer.current) clearTimeout(reconnectTimer.current);
-      ws.current?.close();
-    };
+  return () => {
+    isMounted = false;
+    if (reconnectTimer.current) clearTimeout(reconnectTimer.current);
+    closeWebSocket();
+  };
   }, [roomId]);
 
   if (!data) {

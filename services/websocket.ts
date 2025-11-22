@@ -1,19 +1,26 @@
+import { WS_BASE_URL } from "@/config/websocket";
 import { getTokens } from "@/utils/storage";
-import { WS_BASE_URL } from "../config/websocket";
 
+let socket: WebSocket | null = null;
 
-
-export async function createWebSocket(room: string) {
-  const url = `${WS_BASE_URL}?room=${room}`;
-
-  const headers: any = {};
-
-  const tokens = await getTokens();
-  if (tokens == null) {
-    return null;
+export const createWebSocket = async (roomId: string) => {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    return socket;
   }
 
-  headers["Authorization"] = `Bearer ${tokens.access_token}`;
-  // Trong React Native, WebSocket hỗ trợ subprotocol, không hỗ trợ headers trực tiếp
-  return new WebSocket(url, tokens ? [`Bearer ${tokens.access_token}`] : undefined);
-}
+  const tokens = await getTokens();
+  const access = tokens?.access_token;
+
+  socket = new WebSocket(
+    `${WS_BASE_URL}?room=${roomId}&token=${access}`
+  );
+
+  return socket;
+};
+
+export const closeWebSocket = () => {
+  if (socket) {
+    socket.close();
+    socket = null;
+  }
+};
