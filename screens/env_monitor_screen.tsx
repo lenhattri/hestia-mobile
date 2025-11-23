@@ -27,18 +27,20 @@ export function EnvMonitorScreen({ roomId }: EnvMonitorScreenProps) {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         <Animated.View entering={FadeInDown.duration(400)} style={styles.headerRow}>
-          <View>
+          <View style={styles.headerText}>
             <Text style={styles.subtitle}>Environment Monitor</Text>
             <Text style={styles.title}>{data?.roomId ?? "Loading room"}</Text>
             <Text style={styles.timestamp}>
               {data?.ts ? new Date(data.ts).toLocaleString() : "Syncing in real-time"}
             </Text>
           </View>
-          <StatusBadge
-            label={data?.state ? `State: ${data.state}` : "State: --"}
-            variant={statusVariant}
-            connection={connectionStatus === "connected" ? "Real-time" : "Lost"}
-          />
+          <View style={styles.statusWrap}>
+            <StatusBadge
+              label={data?.state ? `State: ${data.state}` : "State: --"}
+              variant={statusVariant}
+              connection={connectionStatus === "connected" ? "Real-time" : "Lost"}
+            />
+          </View>
         </Animated.View>
 
         {isLoading || !data ? (
@@ -128,6 +130,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
+    flexWrap: "wrap",
+    gap: 12,
+  },
+  headerText: {
+    flexShrink: 1,
+    minWidth: "60%",
   },
   subtitle: {
     color: "#3A7AFE",
@@ -143,6 +151,10 @@ const styles = StyleSheet.create({
   timestamp: {
     color: "#6B7280",
     marginTop: 2,
+  },
+  statusWrap: {
+    marginLeft: "auto",
+    alignSelf: "flex-start",
   },
   skeletonWrap: {
     marginTop: 16,
